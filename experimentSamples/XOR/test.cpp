@@ -37,13 +37,11 @@ void experiment( Organism& orgm )
 	vector<float> out4 = orgm.ann->getOutputs();
 	error += fabs(fabs(out4.at(0)) - 0.f);
 
-	//cerr << "error: " << error << "\t{" << out1.at(0) <<", " << out2.at(0) <<", " << out3.at(0) << ", " << out4.at(0) <<"} " << endl; 
 	float error_MAX = 4.0;
 	float fitness = (error_MAX - error)*(error_MAX - error);
 	if(fitness > maxFitness){
 		maxFitness = fitness; 
 		cout << "MF: " << maxFitness << "\t{" << out1.at(0) <<", " << out2.at(0) <<", " << out3.at(0) << ", " << out4.at(0) << endl;
-		//orgm.printInfo();
 	} 
 
 	if(fitness > maxGeneration){
@@ -59,46 +57,23 @@ void sendAllOrganismToExperiment( Life& life ); // function prototype
 
 int main()
 {
-	srand(time(0)); //  Para que cada vez que se use el método random tenga una piscina de números randoms diferentes.
-	auto BNseed = make_unique < BasicNeuron > ( );  
-	auto BSWseed = make_unique < BasicSynapticWeight > ( ); 
-	auto ann1  = make_unique < ANN > ( move(BNseed), move(BSWseed) );
-	auto life = make_unique <Life>( move(ann1) );
-
-	for (int i = 0; i < 100; ++i)
+	srand(time(0));//  Para que cada vez que se use el método random tenga una piscina de números randoms 
+	auto BNseed = make_shared < BasicNeuron > ( );
+	auto BSWseed = make_shared < BasicSynapticWeight > ( );
+	auto neatExp = make_unique <NEATExperiment>(BNseed, BSWseed);
+	uint generations = 100;
+	for (uint i = 0; i < generations ; ++i)
 	{
-		sendAllOrganismToExperiment(*life);
-		//cout << "Gen " << i << "\t" << fitnessAcumm/(float)contador  <<"\t" << contador << "\t" << life->spicies.size()<< endl;
 		fitnessAcumm = 0.f;
 		contador = 0;
-		life->epoch();
+		auto organismsAmount = neatExp->getAmountOfOrganismsInCurrentGeneration();
+		for (uint j = 0; j < organismsAmount; ++j)
+		{
+			
+			experiment(*neatExp->getOrganismAt(j));
+		}
+		neatExp->epoch();
 		cout << "MG: " << maxGeneration << endl;
 		maxGeneration = 0.f;
-
-	}
-	cout << "================================================" << endl;
-	life->printInfo();
-	cout << "maxFitness: " << maxFitness << endl;
-	return 0;
-}
-
-void sendAllOrganismToExperiment( Life& life )
-{
-	for ( auto& spicie : life.spicies)
-	{
-		for( auto& race: spicie->youngRaces)
-		{
-			for( auto& orgm : race->newOrganisms )
-			{
-				experiment( *orgm );
-			}
-		}
-		for( auto& race: spicie->oldRaces)
-		{
-			for( auto& orgm : race->newOrganisms )
-			{
-				experiment( *orgm );
-			}
-		}
 	}
 }

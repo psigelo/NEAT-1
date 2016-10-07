@@ -5,12 +5,18 @@ COMPILER=g++ -std=c++14
 
 CFLAGS=-Wall -fPIC -I./include -I./objects -I./src -O3
 
-OBJS = ./objects/Neuron.o ./objects/SynapticWeight.o ./objects/BasicNeuron.o ./objects/Parameter.o ./objects/BasicNeuronUserDefinitions.o ./objects/BasicSynapticWeight.o ./objects/BasicSynapticWeightUserDefinitions.o ./objects/Layer.o  ./objects/ANN.o ./objects/ANNUserDefinitions.o ./objects/Organism.o ./objects/OrganismUserDefinitions.o ./objects/Race.o ./objects/RaceUserDefinitions.o ./objects/ANNTools.o ./objects/RaceTools.o ./objects/SpiciesTools.o ./objects/Spicies.o ./objects/SpiciesUserDefinitions.o ./objects/Life.o ./objects/LifeUserDefinitions.o ./objects/LifeTools.o ./objects/TauSynapticWeight.o ./objects/TauSynapticWeightUserDefinitions.o ./objects/LIFNeuron.o ./objects/LIFNeuronUserDefinitions.o 
+OBJS = ./objects/Neuron.o ./objects/SynapticWeight.o ./objects/BasicNeuron.o ./objects/Parameter.o ./objects/BasicNeuronUserDefinitions.o ./objects/BasicSynapticWeight.o ./objects/BasicSynapticWeightUserDefinitions.o ./objects/Layer.o  ./objects/ANN.o ./objects/ANNUserDefinitions.o ./objects/Organism.o ./objects/OrganismUserDefinitions.o ./objects/Race.o ./objects/RaceUserDefinitions.o ./objects/ANNTools.o ./objects/RaceTools.o ./objects/SpiciesTools.o ./objects/Spicies.o ./objects/SpiciesUserDefinitions.o ./objects/Life.o ./objects/LifeUserDefinitions.o ./objects/LifeTools.o ./objects/TauSynapticWeight.o ./objects/TauSynapticWeightUserDefinitions.o ./objects/LIFNeuron.o ./objects/LIFNeuronUserDefinitions.o ./objects/NEATExperiment.o
 
 .PHONY: all clean install git
 
-all: Neuron.o SynapticWeight.o Parameter.o BasicNeuronUserDefinitions.o BasicNeuron.o BasicSynapticWeightUserDefinitions.o BasicSynapticWeight.o Layer.o ANNUserDefinitions.o ANN.o OrganismUserDefinitions.o Organism.o RaceUserDefinitions.o Race.o ANNTools.o RaceTools.o SpiciesTools.o Spicies.o SpiciesUserDefinitions.o Life.o LifeUserDefinitions.o LifeTools.o TauSynapticWeightUserDefinitions.o TauSynapticWeight.o LIFNeuronUserDefinitions.o LIFNeuron.o
+all: Neuron.o SynapticWeight.o Parameter.o BasicNeuronUserDefinitions.o BasicNeuron.o BasicSynapticWeightUserDefinitions.o BasicSynapticWeight.o Layer.o ANNUserDefinitions.o ANN.o OrganismUserDefinitions.o Organism.o RaceUserDefinitions.o Race.o ANNTools.o RaceTools.o SpiciesTools.o Spicies.o SpiciesUserDefinitions.o Life.o LifeUserDefinitions.o LifeTools.o TauSynapticWeightUserDefinitions.o TauSynapticWeight.o LIFNeuronUserDefinitions.o LIFNeuron.o NEATExperiment.o
 	@echo All NEAT Compiled 
+
+NEATExperiment.o: NEATExperiment.cpp
+	@echo Compiling NEATExperiment class
+	@mkdir -p objects
+	@$(COMPILER) $(CFLAGS) -c $< -o ./objects/NEATExperiment.o
+
 
 Neuron.o: Neuron.cpp 
 	@echo Compiling Neuron class
@@ -147,8 +153,7 @@ install:
 	@ln -sf libneatspikes.so.1.0 libneatspikes.so
 	@ln -sf libneatspikes.so.1.0 libneatspikes.so.1
 	@mv libneatspikes.so.1.0 libneatspikes.so libneatspikes.so.1 /usr/lib
-	#@mkdir -p /usr/include/NEATSPIKES_include/
-	#@find ./include -type f -exec cp {} /usr/include/NEATSPIKES_include/ \;
+	@rm -rf /usr/include/NEATSPIKES_include
 	@cp -r ./include /usr/include/NEATSPIKES_include;
 	@cp NEATSpikes /usr/include
 	@chmod go+r --recursive /usr/include/NEATSPIKES_include/*
